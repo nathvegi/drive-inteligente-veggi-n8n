@@ -1,0 +1,1447 @@
+{
+  "name": "Repositório Telegram - Veggi 3.0",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1984,
+        -528
+      ],
+      "id": "ee3c0dc9-ace1-4199-8e2e-1cd4df837f93",
+      "name": "Telegram Trigger",
+      "webhookId": "b9fd3279-7404-42cf-8501-f3d757a94007",
+      "credentials": {
+        "telegramApi": {
+          "id": "rsdJYCkzJIChJvJF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31a3271d-e04a-4d98-b6df-38d1a97b8bab",
+              "name": "userMessage",
+              "value": "={{$json[\"message\"][\"text\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "85cb2ea5-3929-456a-8ca4-dfab7e5affb5",
+              "name": "name",
+              "value": "={{ $json.message.chat.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "907fcfeb-0935-440e-a688-65947b41ce22",
+              "name": "=chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            },
+            {
+              "id": "18368af1-c5d4-4b79-af30-93fc070d8b15",
+              "name": "message_id",
+              "value": "={{ $json.message.message_id }}",
+              "type": "string"
+            },
+            {
+              "id": "1ee98bf5-41c7-4bdb-93a9-3efc6aeeb943",
+              "name": "user_id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        -400
+      ],
+      "id": "e4c40dfc-ef8f-4478-a7a4-1ccf69f7c1ac",
+      "name": "Campos"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userMessage }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um Agent Extractor especializado no repositório Veggi. Sua função é transformar a fala do usuário em um JSON estruturado seguindo REGRAS RÍGIDAS. Você tem acesso ao histórico da conversa. Utilize as mensagens anteriores para preencher campos que não foram mencionados na última mensagem. Por exemplo, se o usuário já mencionou uma LINHA anteriormente e agora mencionou apenas o TIPO, considere que ele ainda se refere àquela LINHA.\n\nREGRAS RÍGIDAS DE EXTRAÇÃO:\n\n1. REFERÊNCIA: Deve ser EXCLUSIVAMENTE um código numérico no formato 00.00.0000 (ex: 12.34.5678). \n   - Se o usuário mencionar nomes de temas, personagens ou marcas (ex: \"Stranger Things\", \"Mickey\"), isso NÃO é uma referência, deve ser colocado no campo \"linha\".\n   - Se não houver um código no formato exato 00.00.0000, retorne \"nenhum\".\n\n2. LINHA: Extraia nomes de coleções, temas ou marcas (ex: \"Stranger Things\", \"Linha Noite\", \"Licenciados\", \"Turma da Bia\", \"Sonho e Fantasia\", \"SF\").\n\n3. COLEÇÃO: Deve conter o ano (ex: 2025) e, se disponível, a estação (Inverno/Verão). Se não houver ano mencionado, retorne \"nenhum\".\n\n4. TIPO: Classifique o material apenas como um destes: \"catalogo\", \"foto\", \"planilha\", \"video\", \"post\", \"banner\" ou \"nenhum\".\n\n5. INTENT (LÓGICA DE DECISÃO):\n   Você deve decidir entre \"buscar_arquivo\" ou \"clarificar\" seguindo esta regra de ouro:\n\n   5.1. Classifique como \"buscar_arquivo\" APENAS SE:\n      - O usuário fornecer (LINHA + TIPO). Ex: \"Me mande fotos da Turma da Bia\".\n      - OU o usuário fornecer uma (REFERÊNCIA) válida. Ex: \"Quero o arquivo da 12.34.5678\".\n\n   5.2. Classifique como \"clarificar\" SE:\n      - O usuário fornecer APENAS a LINHA. Ex: \"Quero ver os licenciados\" (Falta saber se ele quer foto, vídeo, catálogo, etc).\n      - O usuário fornecer APENAS o TIPO. Ex: \"Me mande os banners\" (Falta saber de qual linha).\n      - A mensagem for vaga ou não contiver dados de busca.\n\nIMPORTANTE: \n- Nunca invente valores. \n- Em caso de \"clarificar\", preencha o que encontrar e deixe o resto como \"nenhum\".\n- Se a informação não existir ou não seguir o padrão acima, retorne \"nenhum\".\n- Sua resposta deve ser APENAS o JSON puro, sem textos explicativos."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -608,
+        -576
+      ],
+      "id": "fbdb138a-bd7d-43c1-a3bd-ff3deadca00c",
+      "name": "Agent Extrator",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.file_id }}\n",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    },
+                    "id": "f323c4b6-6f62-440b-bf2a-fc9b82b1d82f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b0ee3f46-b84d-4f57-a482-93928077bef7",
+                    "leftValue": "={{ $json.file_id }}\n",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        -112
+      ],
+      "id": "93ccd233-6f87-4bb5-8858-33440c7dfbd9",
+      "name": "Verifica File_Id"
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $items(\"Telegram Trigger\")[0].json.message.chat.id }}",
+        "file": "={{ $json.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1424,
+        -16
+      ],
+      "id": "ee7db19a-c9da-4e14-93bb-7f39743dc245",
+      "name": "Envio de Documento",
+      "webhookId": "6d47fb44-a0ee-4848-b5f4-b87ac27252c8",
+      "credentials": {
+        "telegramApi": {
+          "id": "rsdJYCkzJIChJvJF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        -336
+      ],
+      "id": "094b2f3e-fad8-4c6d-8052-d51ba4ba600b",
+      "name": "Envio de msg Texto",
+      "webhookId": "a83f3828-c4a3-4043-96f1-6797264d8635",
+      "credentials": {
+        "telegramApi": {
+          "id": "rsdJYCkzJIChJvJF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é a Bia, assistente virtual da Veggi. Responda como uma vendedora de moda ágil e simpática.\n\nO QUE O USUÁRIO DISSE:\n\nIntenção: {{ $json.intent }}\n\nLinha identificada: {{ $json.linha }}\n\nColeção identificada: {{ $json.colecao }}\n\nTipo identificado: {{ $json.tipo }}\n\nCONTEXTO PARA SUA RESPOSTA:\n\nSe for \"pedir_clarificacao\": O pedido foi vago. Use o termo que ele citou (ex: \"Licenciados\" ou \"Inverno 2025\") e pergunte se ele quer fotos, catálogo ou lookbook disso.\n\nSe for erro de busca (Banco Vazio): Diga que não encontrou esse material específico e peça para ele conferir o nome ou tentar outro termo.\n\nREGRAS DE OURO:\n\nSeja direta: No máximo 2 frases.\n\nSubstitua \"esse material\" ou \"daquela linha\" pelo nome real do que ele pediu.\n\nSe ele não citou nome nenhum, use \"o que você procura\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        -336
+      ],
+      "id": "f1740e98-52d6-401d-9b0a-c86f0b263424",
+      "name": "Agente de Resposta de Texto"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -384
+      ],
+      "id": "bd5fb774-ce83-45ab-b6ea-d64378e18e35",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YpUvu5tkum9YHROm",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        -176
+      ],
+      "id": "76408bb8-f5b2-43fe-bcb8-3761832ff6b6",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YpUvu5tkum9YHROm",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isUseful }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "01180756-c11c-4c81-a1f0-82825f6767ed",
+      "name": "É mensagem útil?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1648,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json[\"message\"]?.chat?.id}}",
+        "text": "Oi! Tudo bem? Como posso te ajudar hoje? Como sugestão, vc pode me pedir a referência do produto que deseja foto, ou se quer algum catálogo específico me informando a linha, coleção e ano. Quanto mais informações você me passar, mais rápido eu consigo encontrar o arquivo pra você!",
+        "additionalFields": {}
+      },
+      "id": "a9c9ebda-c8cc-4f8f-b5b6-551a59492d00",
+      "name": "Resposta Saudação",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -1808,
+        -288
+      ],
+      "webhookId": "b6fdad59-e807-427d-87f1-7feb9b0cdd80",
+      "credentials": {
+        "telegramApi": {
+          "id": "4wgGXfMDOPXsCy5R",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "id": "d7f88f0d-9fb4-43f2-bb82-625e956c30c6",
+      "name": "SplitInBatches Arquivos",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $json.message?.text?.toLowerCase() || \"\";\n\nconst saudacoes = [\"oi\", \"olá\", \"ola\", \"bom dia\", \"boa tarde\", \"boa noite\"];\n\nreturn [{\n  json: {\n    ...$json,          // 👈 mantém tudo do Telegram\n    isUseful: !saudacoes.includes(msg.trim())\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1808,
+        -528
+      ],
+      "id": "9987f6c6-1121-4ffb-a3bd-9c43beb8b1c8",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = ($json.userMessage || \"\")\n  .toLowerCase()\n  .normalize(\"NFD\")\n  .replace(/[\\u0300-\\u036f]/g, \"\");\n\nreturn [{\n  json: {\n    ...$json,\n    normalizedText: text\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        -400
+      ],
+      "id": "75f43926-cedd-46ae-bb88-eab1e3b8a43b",
+      "name": "Normalizar Msg"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = ($json.normalizedText || \"\").toLowerCase();\n\n// ---------- DICIONÁRIOS ----------\nconst linhas = {\n  \"sonho e fantasia\": [\"sonho e fantasia\"],\n  \"linha noite\": [\"linha noite\", \"noite\"],\n  \"sleepwear\": [\"sleepwear\", \"pijama\"],\n  \"licenciados\": [\"licenciado\", \"licenciados\", \"warner\", \"marvel\", \"dc\"],\n  \"turma da bia\": [\"turma da bia\", \"bia\"],\n  \"moda praia\": [\"moda praia\", \"praia\", \"beach\"]\n};\n\nconst tipos = {\n  \"catalogo\": [\"catalogo\", \"catálogo\"],\n  \"lookbook\": [\"lookbook\"],\n  \"conceito\": [\"conceito\"],\n  \"still\": [\"still\"],\n  \"foto\": [\"foto\", \"fotos\", \"imagem\", \"imagens\"],\n  \"descricoes\": [\"descricao\", \"descrições\", \"descricao de produto\"]\n};\n\n// ---------- FUNÇÕES ----------\nfunction matchDict(dict) {\n  for (const key in dict) {\n    if (dict[key].some(word => text.includes(word))) {\n      return key;\n    }\n  }\n  return null;\n}\n\n// ---------- EXTRAÇÕES ----------\nconst linha = matchDict(linhas);\nconst tipo = matchDict(tipos);\n\n// referência NN.NN.NNNN\nconst refMatch = text.match(/\\b\\d{2}\\.\\d{2}\\.\\d{4}\\b/);\nconst referencia = refMatch ? refMatch[0] : null;\n\n// coleção (inverno/verão + ano) -> aceita 2 ou 4 dígitos\nlet colecao = null;\n\n// tenta formato \"inverno/verao\" (com ou sem espaço, 2 ou 4 dígitos)\nlet colMatch = text.match(/\\b(inverno|verao|verão|winter|summer)\\s*(20\\d{2}|\\d{2})\\b/i);\n\nif (!colMatch) {\n  // tenta formato curto: I25, V2026, i 15...\n  colMatch = text.match(/\\b([iv])\\s*(20\\d{2}|\\d{2})\\b/i);\n\n  if (colMatch) {\n    const estacao = colMatch[1].toLowerCase() === \"i\" ? \"inverno\" : \"verao\";\n    let ano = colMatch[2];\n    if (ano.length === 2) ano = \"20\" + ano;\n    colecao = `${estacao} ${ano}`;\n  }\n} else {\n  const estacao = colMatch[1].toLowerCase().replace(\"verão\", \"verao\");\n  let ano = colMatch[2];\n  if (ano.length === 2) ano = \"20\" + ano;\n  colecao = `${estacao} ${ano}`;\n}\n\n\n// ---------- SUFICIÊNCIA ----------\nconst isSufficient =\n  !!referencia ||\n  (!!tipo && (!!linha || !!colecao));\n\n// ---------- OUTPUT ----------\nreturn [{\n  json: {\n    ...$json,\n    extracted: {\n      linha,\n      tipo,\n      colecao,\n      referencia\n    },\n    needsAI: !isSufficient\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        -400
+      ],
+      "id": "44c6e07a-1dff-420c-a587-b1a43725cba9",
+      "name": "REGEX - Dicionário"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "337eebcf-ebe4-4220-b0d1-6a03a4e96ad9",
+              "name": "linha_final",
+              "value": "={{ $json.extracted?.linha || $json.linha || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "ea0ae06e-39df-426d-b9d1-c7496e275c14",
+              "name": "tipo_final",
+              "value": "={{ $json.extracted?.tipo || $json.tipo || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "3d066bff-8e7d-4ba9-85e0-3f71b5cd1c9b",
+              "name": "=colecao_final",
+              "value": "={{\n  (() => {\n    const c = ($json.extracted?.colecao || $json.colecao || '').toLowerCase().trim();\n    const m = c.match(/(inverno|verao)\\s*(\\d{2,4})/);\n    if (!m) return '';\n    const ano = m[2].length === 2 ? `20${m[2]}` : m[2];\n    return `${m[1]} ${ano}`;\n  })()\n}}",
+              "type": "string"
+            },
+            {
+              "id": "09d00770-4097-42e6-bf47-b723ddbf3a29",
+              "name": "referencia_final",
+              "value": "={{ $json.extracted?.referencia || $json.referencia || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        -624
+      ],
+      "id": "b40b130d-2ee0-4da6-9e8d-d50be2639371",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "800aea14-c498-4cc2-bb2f-50926126651a",
+              "leftValue": "={{ $json.referencia_final }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        -256
+      ],
+      "id": "3e8d6740-636e-4d9a-8074-4a22f79428a2",
+      "name": "Tem Referencia?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.materiais_telegram\nWHERE 1=1\n\nAND (\n  {{ $json.linha_final && $json.linha_final.trim() !== \"\" \n      ? \"linha = '\" + $json.linha_final.replaceAll(\"'\", \"''\") + \"'\" \n      : \"TRUE\" }}\n)\n\nAND (\n  {{ $json.colecao_final && $json.colecao_final.trim() !== \"\" \n      ? \"colecao = '\" + $json.colecao_final.replaceAll(\"'\", \"''\") + \"'\" \n      : \"TRUE\" }}\n)\n\nAND (\n  {{\n    $json.tipo_final && $json.tipo_final.trim() !== \"\"\n      ? (\n          $json.tipo_final === 'foto'\n            ? \"tipo IN ('still','lookbook','conceito')\"\n            : \"tipo = '\" + $json.tipo_final.replaceAll(\"'\", \"''\") + \"'\"\n        )\n      : \"TRUE\"\n  }}\n)\n\nAND (\n  {{ $json.referencia_final && $json.referencia_final.trim() !== \"\" \n      ? \"referencia ILIKE '%\" + $json.referencia_final.replaceAll(\"'\", \"''\") + \"%'\" \n      : \"TRUE\" }}\n)\n\nORDER BY data_cadastro DESC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        112,
+        -272
+      ],
+      "id": "01c6d912-afc9-4cf1-8abf-b5ac577c065b",
+      "name": "Com referencia",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.materiais_telegram\nWHERE 1=1\n\n-- FILTRO DE LINHA OBRIGATÓRIO SE EXISTIR VALOR\nAND (\n  {{ $json.linha && $json.linha !== \"nenhum\" \n      ? \"linha ILIKE '%\" + $json.linha.replaceAll(\"'\", \"''\") + \"%'\" \n      : \"1=1\" }}\n)\n\n-- FILTRO DE TIPO\nAND (\n  {{ $json.tipo && $json.tipo !== \"nenhum\"\n      ? (\n          $json.tipo === 'foto'\n            ? \"tipo IN ('still','lookbook','conceito')\"\n            : \"tipo = '\" + $json.tipo.replaceAll(\"'\", \"''\") + \"'\"\n        )\n      : \"1=1\"\n  }}\n)\n\nORDER BY data_cadastro DESC;",
+        "options": {
+          "replaceEmptyStrings": true
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        112,
+        64
+      ],
+      "id": "228dd8f9-6aca-4fba-bceb-b00863a6e356",
+      "name": "Linha e Tipo",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "800aea14-c498-4cc2-bb2f-50926126651a",
+              "leftValue": "={{ $json.colecao }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        -32
+      ],
+      "id": "b9db9f48-8469-48af-b7af-92f26e1eaf00",
+      "name": "Tem Coleção?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.materiais_telegram\nWHERE 1=1\n\nAND (\n  {{ $json.colecao_final && $json.colecao_final.trim() !== \"\" \n      ? \"colecao = '\" + $json.colecao_final.replaceAll(\"'\", \"''\") + \"'\" \n      : \"FALSE\" }}\n)\n\nAND (\n  {{ $json.linha_final && $json.linha_final.trim() !== \"\" \n      ? \"linha = '\" + $json.linha_final.replaceAll(\"'\", \"''\") + \"'\" \n      : \"TRUE\" }}\n)\n\nAND (\n  {{\n    $json.tipo_final && $json.tipo_final.trim() !== \"\"\n      ? (\n          $json.tipo_final === 'foto'\n            ? \"tipo IN ('still','lookbook','conceito')\"\n            : \"tipo = '\" + $json.tipo_final.replaceAll(\"'\", \"''\") + \"'\"\n        )\n      : \"TRUE\"\n  }}\n)\n\nORDER BY data_cadastro DESC;\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        112,
+        -112
+      ],
+      "id": "6f50a39a-0530-4c0d-b709-5cea71b12515",
+      "name": "Com coleção",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1fc63e6-31b8-4f4f-bd95-e4b1edc33c0b",
+              "leftValue": "={{ $json.needsAI }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -912,
+        -400
+      ],
+      "id": "48779226-574c-4be1-9f81-ce17ba4b6074",
+      "name": "Precisa de Agente IA?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deduplicação + Explodir (1 item por arquivo final)\n\nconst seen = new Set();\nconst out = [];\n\nfor (const item of $input.all()) {\n  const j = item.json || {};\n\n  // Se vier do banco: já é um item por arquivo (tem file_id e nome_arquivo)\n  // Se vier do agente: pode vir como output.file_ids (array)\n  const fileIdsArray = Array.isArray(j.output?.file_ids) ? j.output.file_ids : null;\n\n  if (fileIdsArray) {\n    // Caso raro: veio array de file_ids (ex: retorno do agente)\n    // Aqui você \"explode\" o array em itens e deduplica por file_id\n    for (const file_id of fileIdsArray) {\n      if (!file_id) continue;\n\n      const key = `fid:${file_id}`;\n      if (seen.has(key)) continue;\n      seen.add(key);\n\n      out.push({ json: { file_id } });\n    }\n    continue;\n  }\n\n  // Caso normal: item já tem nome_arquivo + file_id\n  const nome = (j.nome_arquivo || \"\").trim().toLowerCase();\n  const file_id = j.file_id;\n\n  // Se não tem file_id, não tem o que enviar\n  if (!file_id) continue;\n\n  // Dedup por nome de arquivo (se não existir, cai para file_id)\n  const key = nome ? `name:${nome}` : `fid:${file_id}`;\n  if (seen.has(key)) continue;\n  seen.add(key);\n\n  // Retorna 1 item por arquivo\n  out.push({ json: { ...j, file_id } });\n}\n\nreturn out;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        -16
+      ],
+      "id": "383073d7-37a0-44bd-b55d-25002ac6c3d8",
+      "name": "Deduplicação de Arquivos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction toStr(v) {\n  if (v === null || v === undefined) return '';\n  return String(v).trim();\n}\n\nreturn items.map((item) => {\n  const j = item.json || {};\n\n  // 1) Se vier \"output\" (do agente/parser), sobe os campos pro topo\n  if (j.output && typeof j.output === 'object') {\n    for (const [k, v] of Object.entries(j.output)) {\n      if (j[k] === undefined || j[k] === null || j[k] === '') {\n        j[k] = v;\n      }\n    }\n  }\n\n  // 2) Normaliza campos principais\n  j.file_id = toStr(j.file_id); // se não existir vira ''\n  j.nome_arquivo = toStr(j.nome_arquivo);\n\n  j.tipo = toStr(j.tipo);\n  j.linha = toStr(j.linha);\n  j.referencia = toStr(j.referencia);\n  j.colecao = toStr(j.colecao);\n\n  // 3) Se colecao vier só \"2025\", deixa como \"2025\" (ano)\n  // Se vier \"inverno 2025\" mantém.\n  // (Aqui você pode melhorar depois pra mapear I25/V26 etc.)\n  // Só garantindo consistência:\n  j.colecao = j.colecao.replace(/\\s+/g, ' ');\n\n  // 4) Dedupe key (prioriza file_id; se não tiver, usa nome_arquivo + filtros)\n  // Isso evita “sumir tudo” quando o pedido é amplo (tipo \"todos 2025\")\n  const nf = (j.nome_arquivo || 'sem_nome')\n  .normalize('NFKC')\n  .replace(/\\u00A0/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim()\n  .toLowerCase();\n\nj.dedupe_key = `name:${nf}`;\n\n  // mantém item.json atualizado\n  item.json = j;\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -16
+      ],
+      "id": "9b49c26f-8d3f-4ae0-943e-38257ad34634",
+      "name": "Normalizar Arquivos"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"intent\": {\n      \"type\": \"string\",\n      \"enum\": [\"buscar_arquivos\", \"pedir_clarificacao\"]\n    },\n    \"tipo\": {\n      \"type\": \"string\",\n      \"enum\": [\"nenhum\", \"catalogo\", \"foto\", \"planilha\", \"video\"]\n    },\n    \"colecao\": { \"type\": \"string\" },\n    \"linha\": { \"type\": \"string\" },\n    \"referencia\": { \"type\": \"string\" }\n  },\n  \"required\": [\"intent\", \"tipo\", \"colecao\", \"linha\", \"referencia\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -448,
+        -400
+      ],
+      "id": "24426df5-ed3f-4b5c-9ba3-057a02f579ba",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad5e8cac-fad4-4456-a10d-b1865599e5b3",
+              "name": "intent",
+              "value": "={{$json.intent}}",
+              "type": "string"
+            },
+            {
+              "id": "ca0a3509-e6a3-45a6-b4d8-5de0dccb2f99",
+              "name": "tipo",
+              "value": "={{$json.tipo}}",
+              "type": "string"
+            },
+            {
+              "id": "b45aee40-3f6a-43f8-a70b-b0b6eb1a6e23",
+              "name": "colecao",
+              "value": "={{$json.colecao}}",
+              "type": "string"
+            },
+            {
+              "id": "0623e927-a829-4ea6-aaf9-3efa920236dd",
+              "name": "linha",
+              "value": "={{$json.linha}}",
+              "type": "string"
+            },
+            {
+              "id": "3cbbcab0-df29-455a-972e-c8455d3b72bd",
+              "name": "referencia",
+              "value": "={{$json.referencia}}",
+              "type": "string"
+            },
+            {
+              "id": "30301a71-be7b-4a63-9afc-900e909322ae",
+              "name": "chatId",
+              "value": "={{ $json.chatId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        -800
+      ],
+      "id": "9e32ac46-8b4d-46e4-b845-2785a8d9e940",
+      "name": "Edição de Campos"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3ccb84c9-982a-4ab2-8ef0-6b4a2bd267ea",
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "=buscar_arquivos",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        400,
+        -800
+      ],
+      "id": "e56b69b4-1bba-4512-9d29-1b98ff6ff69d",
+      "name": "Buscar Arquivos?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.materiais_telegram\nWHERE 1=1\n\nAND (\n  {{ $json.linha_final && $json.linha_final.trim() !== \"\" \n      ? \"linha = '\" + $json.linha_final.replaceAll(\"'\", \"''\") + \"'\" \n      : \"TRUE\" }}\n)\n\nAND (\n  {{ $json.referencia_final && $json.referencia_final.trim() !== \"\" \n      ? \"referencia ILIKE '%\" + $json.referencia_final.replaceAll(\"'\", \"''\") + \"%'\" \n      : \"FALSE\" }}\n)\n\nAND tipo IN ('still','lookbook','conceito')\n\nORDER BY data_cadastro DESC;\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        400,
+        -128
+      ],
+      "id": "ebde30be-7a62-4d1e-b1ef-f8e5a503f2de",
+      "name": "Fallback Fotos da Referência",
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a371a290-b0f6-43a4-bd6d-bf19ae27f19c",
+              "leftValue": "=={{ $items().length }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        -272
+      ],
+      "id": "dd21df66-8f95-42f2-a1ef-71d0b729eac1",
+      "name": "Encontrou Registros?"
+    },
+    {
+      "parameters": {
+        "content": "## Entrada e Triagem\n[ENTRADA] Recepção e Filtro de Spam/Saudações",
+        "height": 608,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2032,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "48ff0ddf-b952-4591-a976-1779a14eae7c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $items(\"Telegram Trigger\")[0].json.message.chat.id }}",
+        "text": "=Se precisar de algum outro material, só me pedir!😉",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": true,
+          "disable_web_page_preview": true
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1776,
+        -16
+      ],
+      "id": "27373f47-1e7d-4f95-a174-be1c8aa38573",
+      "name": "Envio de msg Texto - Agradecimento",
+      "webhookId": "a83f3828-c4a3-4043-96f1-6797264d8635",
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "rsdJYCkzJIChJvJF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [$input.first()];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -16
+      ],
+      "id": "e7cb0879-46e4-4a75-a6d9-8a1ff4dadbf0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -272
+      ],
+      "id": "7e9b882f-849e-4d32-8fe8-0b7d2593b1d1",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YpUvu5tkum9YHROm",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. Resgata o ID e garante que ele seja convertido para TEXTO (String)\n// Isso resolve o erro de \"Type\" no Redis\nconst chatId = String($('Telegram Trigger').item.json.message.chat.id);\n\n// 2. Pega a saída da IA\nconst output = $json.output;\nconst clean = (val) => (val === \"nenhum\" || val === \"\" ? null : val);\n\n// 3. Retorna os dados garantindo que o chatId siga no fluxo\nreturn {\n  chatId: chatId, \n  intent: clean(output.intent),\n  tipo: clean(output.tipo),\n  colecao: clean(output.colecao),\n  linha: clean(output.linha),\n  referencia: clean(output.referencia)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -800
+      ],
+      "id": "f910d501-13f7-447b-9b0f-44295f5e8f74",
+      "name": "Tratamento de Campos Nulos"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88528cf2-ef18-4122-be39-c9c6c6e70c16",
+              "leftValue": "={{ $json.id ? 1 : 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        272,
+        64
+      ],
+      "id": "60ae4582-2c71-4de2-a3db-c75a25b54516",
+      "name": "Verificador de Arquivos com Linha ou Tipo"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.chatId }}",
+        "sessionTTL": 3600
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        1248,
+        -176
+      ],
+      "id": "7953b664-46d9-4a17-89a8-dd36ee0370ca",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "rJofpZsVY6KFPgHt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.chatId }}",
+        "sessionTTL": 3600
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -560,
+        -384
+      ],
+      "id": "0f3204ba-d863-4774-810f-becf5283c048",
+      "name": "Redis Chat Memory1",
+      "credentials": {
+        "redis": {
+          "id": "rJofpZsVY6KFPgHt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Extração Híbrida\n[INTELIGÊNCIA] Extração de Entidades (Linha, Tipo, Ref) via REGEX + IA",
+        "height": 608,
+        "width": 1232
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1424,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "4cd6320e-f1c5-4919-be40-c30492aa2f01",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Tratamento e Decisão\n[ROTEAMENTO] Consolidação de Dados e Lógica de Decisão",
+        "height": 496,
+        "width": 768,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -912
+      ],
+      "typeVersion": 1,
+      "id": "d08cc30e-3616-4fe9-89e6-206a51ad0af4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Consulta ao Banco (Postgres)\n[DADOS] Queries SQL - Busca no Repositório Veggi",
+        "height": 624,
+        "width": 768,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "aaf51aa9-313a-41be-8ddd-61388f8e5a1a",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Entrega e Interface\n[OUTPUT] Entrega de Arquivos e Resposta Humana",
+        "height": 624,
+        "width": 1392,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "3ca8e142-ace6-4107-aab5-3a83e14c25b6",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 849472891,
+          "message": {
+            "message_id": 697,
+            "from": {
+              "id": 739898723,
+              "is_bot": false,
+              "first_name": "Nathalia",
+              "last_name": "Vegi",
+              "username": "natvegi",
+              "language_code": "pt-br"
+            },
+            "chat": {
+              "id": 739898723,
+              "first_name": "Nathalia",
+              "last_name": "Vegi",
+              "username": "natvegi",
+              "type": "private"
+            },
+            "date": 1768308119,
+            "text": "catalogo"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campos": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Extrator": {
+      "main": [
+        [
+          {
+            "node": "Tratamento de Campos Nulos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica File_Id": {
+      "main": [
+        [
+          {
+            "node": "Agente de Resposta de Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalizar Arquivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente de Resposta de Texto": {
+      "main": [
+        [
+          {
+            "node": "Envio de msg Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent Extrator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente de Resposta de Texto",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É mensagem útil?": {
+      "main": [
+        [
+          {
+            "node": "Campos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta Saudação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches Arquivos": {
+      "main": [
+        [
+          {
+            "node": "Envio de Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "É mensagem útil?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Msg": {
+      "main": [
+        [
+          {
+            "node": "REGEX - Dicionário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REGEX - Dicionário": {
+      "main": [
+        [
+          {
+            "node": "Precisa de Agente IA?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Tem Referencia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Referencia?": {
+      "main": [
+        [
+          {
+            "node": "Com referencia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tem Coleção?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Linha e Tipo": {
+      "main": [
+        [
+          {
+            "node": "Verificador de Arquivos com Linha ou Tipo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Coleção?": {
+      "main": [
+        [
+          {
+            "node": "Com coleção",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Linha e Tipo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Precisa de Agente IA?": {
+      "main": [
+        [
+          {
+            "node": "Agent Extrator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Com referencia": {
+      "main": [
+        [
+          {
+            "node": "Encontrou Registros?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Com coleção": {
+      "main": [
+        [
+          {
+            "node": "Verifica File_Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicação de Arquivos": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches Arquivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envio de Documento": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Arquivos": {
+      "main": [
+        [
+          {
+            "node": "Deduplicação de Arquivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agent Extrator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edição de Campos": {
+      "main": [
+        [
+          {
+            "node": "Buscar Arquivos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Arquivos?": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente de Resposta de Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback Fotos da Referência": {
+      "main": [
+        [
+          {
+            "node": "Verifica File_Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encontrou Registros?": {
+      "main": [
+        [
+          {
+            "node": "Verifica File_Id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fallback Fotos da Referência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Envio de msg Texto - Agradecimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratamento de Campos Nulos": {
+      "main": [
+        [
+          {
+            "node": "Edição de Campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificador de Arquivos com Linha ou Tipo": {
+      "main": [
+        [
+          {
+            "node": "Verifica File_Id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente de Resposta de Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente de Resposta de Texto",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent Extrator",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "71c5b96e-8403-45af-855c-d00f26a9cc3e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "10cfc5c607fc578e5c40348476b57656393b690f0014f0dbcb8709797e2dbd26"
+  },
+  "id": "RID06Ktz6Z8unLqB",
+  "tags": [
+    {
+      "updatedAt": "2025-08-08T18:52:18.522Z",
+      "createdAt": "2025-08-08T18:52:18.522Z",
+      "id": "5nmpueCMC5XtVniR",
+      "name": "Veggi"
+    }
+  ]
+}
