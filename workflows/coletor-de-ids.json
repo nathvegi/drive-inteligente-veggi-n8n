@@ -1,0 +1,581 @@
+{
+  "name": "Coletor de Ids (Fluxo Auxiliar)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        0
+      ],
+      "id": "a529014b-e8a1-4792-8c84-d98a789be8f1",
+      "name": "Telegram Trigger",
+      "webhookId": "b84b27bb-5a9f-4497-a7d0-5cc905b4986a",
+      "credentials": {
+        "telegramApi": {
+          "id": "4wgGXfMDOPXsCy5R",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0a02cb3-58fe-4394-b70c-47d59cfed829",
+              "name": "id",
+              "value": "={{$json[\"message\"][\"document\"][\"file_unique_id\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "ac2c55c8-df3e-430c-8ad5-33a4e18887c6",
+              "name": "file_id",
+              "value": "={{$json[\"message\"][\"document\"][\"file_id\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "dc600530-d0a0-4bd7-8cbd-63d8ea9f849a",
+              "name": "nome",
+              "value": "={{ $json.message.document.file_name }}",
+              "type": "string"
+            },
+            {
+              "id": "288df643-706c-4422-8c79-1d4b5765a906",
+              "name": "=colecao",
+              "value": "={{$json[\"message\"][\"document\"][\"file_name\"].split(\"_\")[0]",
+              "type": "string"
+            },
+            {
+              "id": "6125fc97-51c0-468c-af0f-6fe455e95300",
+              "name": "=linha",
+              "value": "={{$json[\"message\"][\"document\"][\"file_name\"].split(\"_\")[1]",
+              "type": "string"
+            },
+            {
+              "id": "518d73ab-6ee8-46f7-9326-10d5f8c25367",
+              "name": "=tipo",
+              "value": "={{ $json.message.document.file_name.split('_').length === 4 ? $json.message.document.file_name.split('_')[2] : $json.message.document.file_name.split('_')[2]?.split('.')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "1692e408-519f-49f9-9f83-5ae4a6b96585",
+              "name": "=referencia",
+              "value": "={{ \n  (() => {\n    const fn = ($json.message?.document?.file_name || '').toString();\n    const m = fn.match(/(\\d{2}\\.\\d{2}\\.\\d{4})(?=-(\\d+)\\b|\\.|$)/);\n    return m ? m[1] : '';\n  })()\n}}",
+              "type": "string"
+            },
+            {
+              "id": "23b81625-a1bb-4481-89c9-9fc73bcfa0de",
+              "name": "user_id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "40f81c11-ebc3-4f6a-8dc7-cf869bb9f414",
+              "name": "chat_id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "0b40f8a3-0260-4850-9ae9-02f4c69a7634",
+      "name": "Campos"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "materiais_telegram",
+          "mode": "list",
+          "cachedResultName": "materiais_telegram"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "file_id": "={{ $json.file_id }}",
+            "id": "={{ $json.id }}",
+            "colecao": "={{ $json.colecao }}",
+            "linha": "={{ $json.linha }}",
+            "tipo": "={{ $json.tipo }}",
+            "nome_arquivo": "={{ $json.nome }}",
+            "mime_type": "={{ $('Telegram Trigger').item.json.message.document.mime_type }}",
+            "file_size": "={{ $('Telegram Trigger').item.json.message.document.file_size }}",
+            "referencia": "={{ $json.referencia }}"
+          },
+          "matchingColumns": [
+            "file_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "colecao",
+              "displayName": "colecao",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "linha",
+              "displayName": "linha",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "tipo",
+              "displayName": "tipo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "nome_arquivo",
+              "displayName": "nome_arquivo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "file_id",
+              "displayName": "file_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mime_type",
+              "displayName": "mime_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "file_size",
+              "displayName": "file_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "referencia",
+              "displayName": "referencia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        656,
+        -224
+      ],
+      "id": "78026d6d-ecc4-4858-80e4-fe669f9ff665",
+      "name": "Alimentação BD Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2968dad-82b6-4902-bf87-ffa35b898005",
+              "leftValue": "={{ $json.nome.split('_').length >= 3 }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a46ed07d-9778-44ed-ab4a-12dab1400893",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": "739898723",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -112
+      ],
+      "id": "92e8bab3-461f-4eaa-abeb-571c7c5f04b2",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1b60f191-b532-4f81-9a16-320b208673eb",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.document.file_name }}",
+              "rightValue": "106330889888",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0ce9b293-ce1c-4135-b4da-174b35a43188",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.photo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        0
+      ],
+      "id": "af97ed5b-8644-431a-90a2-ed59c861132b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "❌ Você não tem permissão para enviar arquivos neste bot. Caso precise subir algo para o repositório, entre em contato com o time de tecnologia da Veggi.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        160
+      ],
+      "id": "97404e2a-06a6-40e7-b07d-69eb6695dfbb",
+      "name": "Send a text message",
+      "webhookId": "90abd491-dfc5-4f24-9f72-c39b09ab457d",
+      "credentials": {
+        "telegramApi": {
+          "id": "4wgGXfMDOPXsCy5R",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "800a00c0-a875-4b1e-8ae2-1ead7007d4d9",
+              "leftValue": "={{ $json.nome.split('_').length >= 3 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a44c22be-7373-4c14-8588-cdcf10506903",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": "739898723",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        16
+      ],
+      "id": "aa957324-afe9-4740-9e39-5a84ff660758",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1k1tAoO43dzBxsMdURrj18QYFY6YRSW9WMHI79-n-nSc",
+          "mode": "list",
+          "cachedResultName": "Log de Erro - Repositório Inteligente",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k1tAoO43dzBxsMdURrj18QYFY6YRSW9WMHI79-n-nSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Logs_de_erro",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k1tAoO43dzBxsMdURrj18QYFY6YRSW9WMHI79-n-nSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mensagem_erro": "Nome do arquivo não corresponde ao padrão para o repositório",
+            "file_name": "={{ $json.nome }}",
+            "data": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "file_name",
+              "displayName": "file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mensagem_erro",
+              "displayName": "mensagem_erro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "observações",
+              "displayName": "observações",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        880,
+        -80
+      ],
+      "id": "2469593d-d811-4913-9daa-5ac26cef7851",
+      "name": "Log de Erro de Nome",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RkViAhs3Wvsjy1uO",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campos": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alimentação BD Postgres": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Alimentação BD Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Log de Erro de Nome",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "faed43d7-9ac2-4ffd-b7be-748fe66efba6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "10cfc5c607fc578e5c40348476b57656393b690f0014f0dbcb8709797e2dbd26"
+  },
+  "id": "0mrfW3evZtzNRbg7",
+  "tags": [
+    {
+      "updatedAt": "2025-08-08T18:52:18.522Z",
+      "createdAt": "2025-08-08T18:52:18.522Z",
+      "id": "5nmpueCMC5XtVniR",
+      "name": "Veggi"
+    }
+  ]
+}
