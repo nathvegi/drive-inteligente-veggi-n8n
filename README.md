@@ -13,11 +13,11 @@ O **Drive Inteligente Veggi** é um ecossistema de automação profissional dese
 ## 📸 Arquitetura do Sistema
 
 ### Fluxo Principal (Assistente Bia)
-![Fluxo Principal](./img/fluxo-principal.png)
+![Fluxo Principal](./img/fluxo-principa-01.png)
 *O cérebro do sistema: Triagem de mensagens, extração estruturada com Gemini e motor de busca no banco de dados.*
 
 ### Fluxo Auxiliar (Coletor de IDs)
-![Fluxo Coletor](./img/fluxo-coletor.png)
+![Fluxo Coletor](./img/coletor-de-dados.png)
 *O motor de alimentação: Recebe mídias, valida a nomenclatura e registra os IDs únicos no PostgreSQL.*
 
 ## 🛠️ Stack Tecnológica
