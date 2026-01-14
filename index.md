@@ -19,7 +19,7 @@ Para facilitar a manutenção, o sistema foi desenhado seguindo uma hierarquia d
 
 ### 2. Detalhe: Camada de Inteligência e Extração
 ![Inteligência e Extração](./img/fluxo-principa-02.png)
-*Uso do Google Gemini 1.5 e Structured Output Parser para garantir dados limpos.*
+*Uso do Google Gemini e Structured Output Parser para garantir dados limpos.*
 
 ### 3. Detalhe: Motor de Busca e Filtros
 ![Busca e Filtros](./img/fluxo-principa-03.png)
