@@ -10,15 +10,23 @@ O **Drive Inteligente Veggi** é um ecossistema de automação profissional dese
 * **Deduplicação Inteligente:** Filtro que garante que o usuário receba apenas arquivos únicos, evitando repetições desnecessárias.
 * **Memória de Contexto:** Integração com Redis para manter o histórico da conversa, permitindo perguntas de acompanhamento.
 
-## 📸 Arquitetura do Sistema
+## 📸 Detalhes da Arquitetura (n8n)
 
-### Fluxo Principal (Assistente Bia)
-![Fluxo Principal](./img/fluxo-principa-01.png)
-*O cérebro do sistema: Triagem de mensagens, extração estruturada com Gemini e motor de busca no banco de dados.*
+### 1. Visão Geral do Fluxo Principal
+![Fluxo Principal](./img/fluxo-principal-geral.png)
+*Arquitetura completa da Bia: desde a entrada da mensagem até a entrega do arquivo final.*
 
-### Fluxo Auxiliar (Coletor de IDs)
-![Fluxo Coletor](./img/coletor-de-dados.png)
-*O motor de alimentação: Recebe mídias, valida a nomenclatura e registra os IDs únicos no PostgreSQL.*
+### 2. Camada de Inteligência e Extração
+![Inteligência e Extração](./img/detalhe-inteligencia.png)
+*Destaque para o Agente Extrator e o esquema de memória (Redis) que permite conversas contextuais.*
+
+### 3. Motor de Busca e Filtros
+![Busca e Filtros](./img/detalhe-busca.png)
+*Visualização da lógica de roteamento e busca inteligente no banco de dados PostgreSQL.*
+
+### 4. Fluxo Auxiliar (Coletor de IDs)
+![Fluxo Coletor](./img/fluxo-coletor.png)
+*Sistema de ingestão de dados: validação de nomenclatura e registro automático.*
 
 ## 🛠️ Stack Tecnológica
 
