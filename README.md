@@ -1,10 +1,10 @@
-# 🤖 Drive Inteligente Veggi - Assistente Bia (n8n)
+# 🤖 Drive Inteligente Veggi (n8n)
 
 O **Drive Inteligente Veggi** é um ecossistema de automação profissional desenvolvido para gerenciar, indexar e distribuir ativos de marca (fotos, catálogos e documentos) via Telegram, utilizando Processamento de Linguagem Natural (PLN).
 
 ## 🌟 Principais Funcionalidades
 
-* **Busca Inteligente:** A assistente (Bia) entende pedidos naturais como "Me mande o catálogo de Verão 25" ou "Fotos da linha Casual" utilizando IA.
+* **Busca Inteligente:** O Assistente Drive Inteligente Veggi entende pedidos naturais como "Me mande o catálogo de Verão 25" ou "Fotos da linha Casual" utilizando IA.
 * **Extração Híbrida:** Sistema otimizado que combina padrões REGEX para velocidade e o modelo LLM Google Gemini para extração de entidades complexas.
 * **Coletor Automático:** Fluxo secundário que indexa automaticamente arquivos enviados a um canal monitorado, extraindo metadados diretamente para o banco de dados.
 * **Deduplicação Inteligente:** Filtro que garante que o usuário receba apenas arquivos únicos, evitando repetições desnecessárias.
@@ -14,7 +14,7 @@ O **Drive Inteligente Veggi** é um ecossistema de automação profissional dese
 
 ### 1. Visão Geral do Fluxo Principal
 ![Fluxo Principal](./img/fluxo-principa-01.png)
-*Arquitetura completa da Bia: desde a entrada da mensagem até a entrega do arquivo final.*
+*Arquitetura completa do Drive Inteligente Veggi: desde a entrada da mensagem até a entrega do arquivo final.*
 
 ### 2. Camada de Inteligência e Extração
 ![Inteligência e Extração](./img/fluxo-principa-02.png)
