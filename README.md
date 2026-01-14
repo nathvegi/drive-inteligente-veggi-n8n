@@ -9,7 +9,7 @@ O **Drive Inteligente Veggi** transforma um repositório de arquivos no Telegram
 - **Memória de Curto Prazo:** Contexto de conversa gerido por Redis.
 - **Coletor Automático:** Ingestão de dados via canal de repositório com validação de nomenclatura.
 - **Arquitetura SQL:** Base de dados relacional para buscas rápidas e estruturadas.
-- **Auditoria sob Demanda:** Geração de relatórios em Excel via Telegram com consultas SQL flexíveis. [ADICIONADO]
+- **Auditoria sob Demanda:** Geração de relatórios em Excel via Telegram com consultas SQL flexíveis.
 
 ## 📊 Manutenção e Auditoria
 Para garantir a integridade do banco de dados, o repositório inclui um fluxo auxiliar (`Auditoria de Dados - Postgres.json`):
