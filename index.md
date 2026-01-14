@@ -5,7 +5,7 @@ title: Drive Inteligente Veggi
 
 # 🤖 Drive Inteligente Veggi - Documentação Técnica
 
-Bem-vindo à documentação oficial da assistente **Bia**, uma solução de inteligência de dados para o ecossistema Veggi.
+Bem-vindo à documentação oficial do assistente **Drive Inteligente Veggi**, uma solução de inteligência de dados para o ecossistema Veggi.
 
 ---
 
