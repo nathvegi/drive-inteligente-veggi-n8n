@@ -1,26 +1,3 @@
-<style>
-  /* Fundo da página e texto */
-  body { background-color: #121212 !important; color: #e0e0e0 !important; }
-  
-  /* Ajuste do Header (Topo do Cayman) */
-  .page-header {
-    background-color: #1a1a1a !important;
-    background-image: linear-gradient(120deg, #155799, #1a1a1a) !important;
-  }
-
-  /* Ajuste dos links e botões */
-  a { color: #1e90ff !important; }
-  .btn { background-color: rgba(255, 255, 255, 0.05) !important; border-color: rgba(255, 255, 255, 0.2) !important; color: #fff !important; }
-
-  /* Ajuste dos blocos de código e tabelas */
-  code, pre { background-color: #1e1e1e !important; color: #ff7b72 !important; border: 1px solid #333 !important; }
-  table { background-color: #1e1e1e !important; border: 1px solid #444 !important; }
-  th, td { border: 1px solid #444 !important; color: #e0e0e0 !important; }
-
-  /* Títulos */
-  h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
-</style>
-
 ---
 layout: default
 title: Drive Inteligente Veggi
