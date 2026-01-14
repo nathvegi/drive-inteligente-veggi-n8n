@@ -14,7 +14,7 @@ Bem-vindo à documentação oficial da assistente **Bia**, uma solução de inte
 Para facilitar a manutenção, o sistema foi desenhado seguindo uma hierarquia de cores e blocos funcionais.
 
 ### 1. Visão Geral do Fluxo Principal
-![Fluxo Principal](./img/fluxo-fluxo-principa-01.png)
+![Fluxo Principal](./img/fluxo-principa-01.png)
 *Arquitetura de ponta a ponta: Entrada, Triagem, Inteligência e Entrega.*
 
 ### 2. Detalhe: Camada de Inteligência e Extração
