@@ -42,7 +42,7 @@ Este workflow é o responsável pelo **ETL (Extract, Transform, Load)** dos arqu
 
 ### ⚠️ Sistema de Alertas e Auditoria (Logs)
 
-O Drive Inteligente Veggi possui um mecanismo de **Autocorreção e Notificação**. 
+O Drive Inteligente Veggi possui um mecanismo de **Autocorreção e Notificação**.
 
 * **Validação em Tempo Real:** Sempre que um arquivo é enviado ao canal de repositório, o fluxo testa a integridade do nome.
 * **Notificação de Falha:** Caso o padrão `_` seja ignorado, o nó `Telegram - Notificar Erro` dispara um alerta imediato ao administrador informando qual arquivo falhou e por quê.
@@ -66,18 +66,18 @@ O "Cérebro" do sistema que processa as solicitações dos usuários finais via 
 
 #### B. Camada de Recuperação (SQL Dinâmico)
 
-O **Nó PostgreSQL** é o motor de busca final. Ele não executa uma consulta estática; ele utiliza uma lógica de **Filtros Dinâmicos Coerentes** para garantir que o usuário nunca receba um "nada encontrado" se houver dados similares.
+O **Nó PostgreSQL** é o motor de busca final. Ele utiliza uma lógica de **Filtros Dinâmicos Coerentes** para garantir resultados precisos.
 
-* **Busca por Referência (Prioridade 1):** O sistema primeiro tenta filtrar pela `referencia` exata (padrão `NN.NN.NNNN`). Se este campo estiver preenchido, o SQL ignora outros filtros para garantir precisão cirúrgica.
-* **Lógica Híbrida de Tipos (Mapeamento de Mídia):** Para facilitar a vida do usuário leigo, o nó traduz termos genéricos em categorias técnicas:
-    * Se o usuário pede **"Foto"**, o SQL busca automaticamente por: `tipo ILIKE '%still%'` OR `tipo ILIKE '%lookbook%'` OR `tipo ILIKE '%conceito%'`.
-    * Se o usuário pede **"Vídeo"**, ele filtra por tipos que contenham formatos de vídeo ou a palavra "video" no metadado.
-* **Filtros Cruzados (Coleção + Linha):** Caso a referência não seja informada, o SQL cruza os dados de `colecao` e `linha`. Ele utiliza o operador `ILIKE` com coringas (`%`), o que permite encontrar "Verão 26" mesmo que o usuário digite apenas "verao".
-* **Tratamento de Nulos:** O script é inteligente o suficiente para entender que arquivos com **3 blocos** (sem referência) devem ser retornados quando a busca for geral por linha ou coleção, garantindo que catálogos e guias de marca sempre apareçam nos resultados.
+* **Busca por Referência (Prioridade 1):** O sistema primeiro tenta filtrar pela `referencia` exata. Se preenchido, o SQL ignora outros filtros para garantir precisão cirúrgica.
+* **Lógica Híbrida de Tipos (Mapeamento de Mídia):** Traduz termos genéricos em categorias técnicas:
+    * **"Foto":** Busca por `still`, `lookbook` ou `conceito`.
+    * **"Vídeo":** Filtra por termos que contenham formatos de vídeo ou a palavra "video".
+* **Filtros Cruzados (Coleção + Linha):** Caso a referência seja omitida, o SQL cruza `colecao` e `linha` usando `ILIKE` com coringas (`%`).
+* **Tratamento de Nulos:** Garante que arquivos sem referência (3 blocos) apareçam em buscas gerais de linha ou coleção.
+
+---
 
 ## 📸 Arquitetura Visual dos Fluxos (n8n)
-
-Para facilitar a manutenção, o sistema foi desenhado seguindo uma hierarquia de cores e blocos funcionais.
 
 ### 1. Visão Geral do Fluxo Principal
 ![Fluxo Principal](./img/fluxo-principa-01.png)
@@ -95,25 +95,23 @@ Para facilitar a manutenção, o sistema foi desenhado seguindo uma hierarquia d
 ![Fluxo Coletor](./img/coletor-de-dados.png)
 *Automação de back-office para alimentação rápida do banco de dados.*
 
-### 5. Diagrama da Estrutura da Tabela:**
+### 5. Diagrama da Estrutura da Tabela
 ![Database Schema](./img/tabela.png)
 
 ---
 
 ## 🔧 4. Gestão de Erros e Manutenção
 
-Para garantir a resiliência do Fluxo Principal, foram implementadas as seguintes rotinas:
-
 ### 🛠️ Ajuste de IA e Sinônimos
-Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de "linha"), a manutenção deve ocorrer no nó **SCHEMA - Definição de Campos**, adicionando exemplos de sinônimos ao prompt da IA.
+Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de "linha"), a manutenção deve ocorrer no nó **SCHEMA - Definição de Campos**, adicionando sinônimos ao prompt.
 
-### 📋 Tabela de Troubleshooting (Fluxo Principal)
+### 📋 Tabela de Troubleshooting
 
 | Sintoma | Causa Provável | Solução |
 | :--- | :--- | :--- |
-| **IA ignora a referência** | Formato de input fora do padrão `NN.NN.NNNN` | Ajustar o Regex de limpeza inicial ou treinar o prompt. |
-| **Busca retorna "Nada Encontrado"** | Divergência entre termo pedido e termo cadastrado | Verificar no banco se o arquivo possui o underline `_` correto. |
-| **Respostas desconexas** | Memória do Redis corrompida ou expirada | Limpar o histórico de chat ou aguardar o tempo de expiração. |
+| **IA ignora a referência** | Input fora do padrão `NN.NN.NNNN` | Ajustar o Regex de limpeza ou treinar o prompt. |
+| **Busca retorna "Vazio"** | Divergência no cadastro (falta de `_`) | Re-enviar o arquivo com a nomenclatura correta. |
+| **Respostas desconexas** | Memória do Redis corrompida | Limpar o histórico de chat ou aguardar expiração. |
 
 ---
 
@@ -136,7 +134,7 @@ Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de 
 | **Workflow Coletor** | JSON (n8n) | [Baixar](./workflows/coletor-de-ids.json) |
 | **Setup de Banco** | SQL Script | [Ver Script](./sql/setup_database.sql) |
 
-> **Nota:** Para importar no n8n, basta baixar o arquivo JSON, criar um novo workflow e arrastar o arquivo para dentro da tela do editor.
+> **Nota:** Para importar no n8n, basta baixar o arquivo JSON e arrastar para o editor.
 
 ---
 
