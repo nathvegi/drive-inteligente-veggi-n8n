@@ -25,7 +25,7 @@ O **Drive Inteligente Veggi** é um ecossistema de automação profissional dese
 *Visualização da lógica de roteamento e busca inteligente no banco de dados PostgreSQL.*
 
 ### 4. Fluxo Auxiliar (Coletor de IDs)
-![Fluxo Coletor](./img/fluxo-coletor.png)
+![Fluxo Coletor](./img/coletor-de-dados.png)
 *Sistema de ingestão de dados: validação de nomenclatura e registro automático.*
 
 ## 🛠️ Stack Tecnológica
