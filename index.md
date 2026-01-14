@@ -51,7 +51,7 @@ Para implementar este projeto, você precisará dos arquivos de workflow e do sc
 | Recurso | Descrição | Link de Acesso |
 | :--- | :--- | :--- |
 | **Workflow Principal** | JSON da Assistente (Drive Inteligente) | [Baixar JSON](./workflows/drive-inteligente-assistente-principal.json) |
-| **Workflow Coletor** | JSON do Coletor de IDs | [Baixar JSON](./workflows/coletor-de-ids.json) |
+| **Workflow Coletor** | JSON do Coletor de IDs | [Baixar JSON](.workflows/coletor-de-ids.json) |
 | **Script SQL** | Configuração da Tabela PostgreSQL | [Ver Script SQL](./sql/setup_database.sql) |
 
 > **Nota:** Para importar no n8n, basta baixar o arquivo JSON, criar um novo workflow e arrastar o arquivo para dentro da tela do editor.
