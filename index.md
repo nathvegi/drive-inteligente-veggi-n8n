@@ -141,4 +141,4 @@ Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de 
 *Documentação produzida para o projeto Drive Inteligente Veggi. 2026.*
 
 ---
-[Voltar para o código no GitHub](https://github.com/seu-usuario/drive-inteligente-veggi-n8n)
+[Voltar para o código no GitHub](https://github.com/nathvegi/drive-inteligente-veggi-n8n)
