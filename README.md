@@ -1,6 +1,6 @@
 # 🤖 Drive Inteligente Veggi
 
-Sistema de gestão de ativos digitais automatizado com **n8n**, **Google Gemini 1.5 Flash** e **PostgreSQL**.
+Sistema de gestão de ativos digitais automatizado com **n8n**, **Google Gemini** e **PostgreSQL**.
 
 O **Drive Inteligente Veggi** transforma um repositório de arquivos no Telegram num ecossistema inteligente, permitindo a recuperação de mídias via linguagem natural com memória de contexto.
 
