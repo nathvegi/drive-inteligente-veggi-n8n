@@ -48,6 +48,21 @@ O Drive Inteligente Veggi possui um mecanismo de **Autocorreção e Notificaçã
 * **Notificação de Falha:** Caso o padrão `_` seja ignorado, o nó `Telegram - Notificar Erro` dispara um alerta imediato ao administrador informando qual arquivo falhou e por quê.
 * **Garantia de Dados:** Isso evita que arquivos fiquem "fantasmas" no Telegram sem estarem registrados no PostgreSQL.
 
+  ---
+
+## 🔍 2.1. Fluxo Auxiliar: Auditoria de Dados Flexível
+
+Este workflow permite a extração de relatórios estruturados diretamente do banco de dados para fins de conferência e limpeza.
+
+### 🛠️ Dinâmica de Operação:
+
+1. **Manual Trigger:** O fluxo é executado sob demanda, garantindo que o processamento do banco ocorra apenas quando necessário.
+2. **Postgres (Query Flexível):** O nó de consulta permite ao administrador editar o SQL diretamente no n8n. Isso possibilita filtrar por coleções específicas, datas ou, como configurado atualmente, identificar arquivos com referência pendente.
+3. **Conversão Binária (XLSX):** Os dados são transformados em uma planilha Excel com compressão ativada para economia de dados.
+4. **Entrega via Telegram:** Utiliza o método `sendDocument` para enviar o relatório gerado ao administrador.
+
+> **Dica de Manutenção:** Para alterar o que será auditado, basta modificar a cláusula `WHERE` no nó de consulta antes de clicar em "Execute Workflow".
+
 ---
 
 ## 🧠 3. Fluxo Principal: Agente do Drive Inteligente
@@ -98,6 +113,10 @@ O **Nó PostgreSQL** é o motor de busca final. Ele utiliza uma lógica de **Fil
 ### 5. Diagrama da Estrutura da Tabela
 ![Database Schema](./img/tabela.png)
 
+### 6. Fluxo Auxiliar: Auditoria de Dados (Postgres para Excel)
+![Fluxo Auditoria](./img/fluxo-auditoria.png)
+*Interface de geração de relatórios sob demanda com entrega via Telegram.*
+
 ---
 
 ## 🔧 4. Gestão de Erros e Manutenção
@@ -132,6 +151,7 @@ Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de 
 | :--- | :--- | :--- |
 | **Workflow Principal** | JSON (n8n) | [Baixar](./workflows/drive-inteligente-assistente-principal.json) |
 | **Workflow Coletor** | JSON (n8n) | [Baixar](./workflows/coletor-de-ids.json) |
+| **Workflow Auditoria** | JSON (n8n) | [Baixar](./workflows/auditoria-de-dados-postgres.json) |
 | **Setup de Banco** | SQL Script | [Ver Script](./sql/setup_database.sql) |
 
 > **Nota:** Para importar no n8n, basta baixar o arquivo JSON e arrastar para o editor.
