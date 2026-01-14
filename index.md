@@ -42,9 +42,19 @@ Para facilitar a manutenção, o sistema foi desenhado seguindo uma hierarquia d
 
 ---
 
-## 📂 Repositório de Arquivos
+---
 
-Os arquivos de importação (`.json`) e os scripts de banco de dados (`.sql`) estão disponíveis nas pastas correspondentes deste repositório para facilitar o deploy em novos ambientes.
+## 📥 Downloads e Recursos
+
+Para implementar este projeto, você precisará dos arquivos de workflow e do script de banco de dados:
+
+| Recurso | Descrição | Link de Acesso |
+| :--- | :--- | :--- |
+| **Workflow Principal** | JSON da Assistente (Drive Inteligente) | [Baixar JSON](./workflows/drive-inteligente.json) |
+| **Workflow Coletor** | JSON do Coletor de IDs | [Baixar JSON](./workflows/coletor-ids.json) |
+| **Script SQL** | Configuração da Tabela PostgreSQL | [Ver Script SQL](./sql/setup_database.sql) |
+
+> **Nota:** Para importar no n8n, basta baixar o arquivo JSON, criar um novo workflow e arrastar o arquivo para dentro da tela do editor.
 
 ---
 [Voltar para o código no GitHub](https://github.com/seu-usuario/drive-inteligente-veggi-n8n)
