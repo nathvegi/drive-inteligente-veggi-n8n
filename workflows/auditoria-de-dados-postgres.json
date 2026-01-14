@@ -1,0 +1,131 @@
+{
+  "name": "Auditoria de Dados - Postgres",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7ce30b25-1043-45b9-a75b-bccb5ff63626",
+      "name": "Gatilho Manual"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT linha, colecao, tipo, referencia, data_cadastro, nome_arquivo \nFROM public.materiais_telegram \nWHERE (referencia IS NULL OR referencia = '') \nAND tipo IN ('still', 'lookbook')\nORDER BY data_cadastro DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d845cac1-a1a9-41cf-959d-ede89243cc4e",
+      "name": "Consulta SQL para Relatório",
+      "credentials": {
+        "postgres": {
+          "id": "A8t4YL2FvxMOKdY0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "compression": true,
+          "fileName": "=relatorio_produtos_sem_referencia_{{ $now.format('dd-MM-yyyy') }}.xlsx"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "b774339b-21de-45b7-89bf-67b522df4b9b",
+      "name": "Gerar Relatorio em Excel"
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "739898723",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        0
+      ],
+      "id": "52c49af6-aea9-4672-94d9-f403eff2dacf",
+      "name": "Enviar Relatório para o Telegram",
+      "webhookId": "4d5f1578-749b-402a-b208-d0c35915fde4",
+      "credentials": {
+        "telegramApi": {
+          "id": "4wgGXfMDOPXsCy5R",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gatilho Manual": {
+      "main": [
+        [
+          {
+            "node": "Consulta SQL para Relatório",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta SQL para Relatório": {
+      "main": [
+        [
+          {
+            "node": "Gerar Relatorio em Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Relatorio em Excel": {
+      "main": [
+        [
+          {
+            "node": "Enviar Relatório para o Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0550940e-da7e-4f09-934e-5d465f6406c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "10cfc5c607fc578e5c40348476b57656393b690f0014f0dbcb8709797e2dbd26"
+  },
+  "id": "mR3Zy8ZbDYP9GCI9",
+  "tags": [
+    {
+      "updatedAt": "2025-08-08T18:52:18.522Z",
+      "createdAt": "2025-08-08T18:52:18.522Z",
+      "id": "5nmpueCMC5XtVniR",
+      "name": "Veggi"
+    }
+  ]
+}
