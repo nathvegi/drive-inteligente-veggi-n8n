@@ -1,55 +1,23 @@
-# 🤖 Drive Inteligente Veggi (n8n)
+# 🤖 Drive Inteligente Veggi
 
-O **Drive Inteligente Veggi** é um ecossistema de automação profissional desenvolvido para gerenciar, indexar e distribuir ativos de marca (fotos, catálogos e documentos) via Telegram, utilizando Processamento de Linguagem Natural (PLN).
+Sistema de gestão de ativos digitais automatizado com **n8n**, **Google Gemini 1.5 Flash** e **PostgreSQL**.
 
-## 🌟 Principais Funcionalidades
+O **Drive Inteligente Veggi** transforma um repositório de arquivos no Telegram num ecossistema inteligente, permitindo a recuperação de mídias via linguagem natural com memória de contexto.
 
-* **Busca Inteligente:** O Assistente Drive Inteligente Veggi entende pedidos naturais como "Me mande o catálogo de Verão 25" ou "Fotos da linha Casual" utilizando IA.
-* **Extração Híbrida:** Sistema otimizado que combina padrões REGEX para velocidade e o modelo LLM Google Gemini para extração de entidades complexas.
-* **Coletor Automático:** Fluxo secundário que indexa automaticamente arquivos enviados a um canal monitorado, extraindo metadados diretamente para o banco de dados.
-* **Deduplicação Inteligente:** Filtro que garante que o usuário receba apenas arquivos únicos, evitando repetições desnecessárias.
-* **Memória de Contexto:** Integração com Redis para manter o histórico da conversa, permitindo perguntas de acompanhamento.
+## 🚀 Funcionalidades
+- **Busca por IA:** Extração de intenção e parâmetros via LLM.
+- **Memória de Curto Prazo:** Contexto de conversa gerido por Redis.
+- **Coletor Automático:** Ingestão de dados via canal de repositório com validação de nomenclatura.
+- **Arquitetura SQL:** Base de dados relacional para buscas rápidas e estruturadas.
 
-## 📸 Detalhes da Arquitetura (n8n)
+## 📂 Organização do Repositório
+- `/workflows`: Ficheiros JSON dos fluxos n8n.
+- `/sql`: Script de criação das tabelas no PostgreSQL.
+- `/docs`: Diagramas e prints da interface.
 
-### 1. Visão Geral do Fluxo Principal
-![Fluxo Principal](./img/fluxo-principa-01.png)
-*Arquitetura completa do Drive Inteligente Veggi: desde a entrada da mensagem até a entrega do arquivo final.*
-
-### 2. Camada de Inteligência e Extração
-![Inteligência e Extração](./img/fluxo-principa-02.png)
-*Destaque para o Agente Extrator e o esquema de memória (Redis) que permite conversas contextuais.*
-
-### 3. Motor de Busca e Filtros
-![Busca e Filtros](./img/fluxo-principa-03.png)
-*Visualização da lógica de roteamento e busca inteligente no banco de dados PostgreSQL.*
-
-### 4. Fluxo Auxiliar (Coletor de IDs)
-![Fluxo Coletor](./img/coletor-de-dados.png)
-*Sistema de ingestão de dados: validação de nomenclatura e registro automático.*
-
-## 🛠️ Stack Tecnológica
-
-| Tecnologia | Função |
-| :--- | :--- |
-| **n8n** | Orquestração de workflows e lógica de negócios. |
-| **Google Gemini 2.5 Flash Lite** | IA para extração de dados estruturados e chat humano. |
-| **PostgreSQL** | Banco de dados para armazenamento de metadados e file_ids. |
-| **Redis** | Persistência de memória de curto prazo (Contexto). |
-| **Telegram API** | Interface de comunicação e servidor de arquivos. |
-
-## 📂 Estrutura do Repositório
-
-* `/workflows`: Arquivos JSON para importação direta no n8n.
-* `/sql`: Script de criação de tabelas e índices do PostgreSQL.
-* `/img`: Documentação visual da arquitetura dos fluxos.
-
-## ⚙️ Configuração e Instalação
-
-1.  **Banco de Dados:** Execute o script em `sql/setup_database.sql` no seu PostgreSQL.
-2.  **Importação:** Importe os JSONs da pasta `/workflows` no seu n8n.
-3.  **Credenciais:** Configure as APIs do Telegram, Google Gemini, Redis e Postgres.
-4.  **Dica Técnica:** Certifique-se de que o `chatId` está sendo tratado como String para garantir a persistência correta no Redis.
+## 📗 Documentação Completa
+Acesse o manual detalhado com a explicação de cada nó e regras de operação em:
+👉 **https://nathvegi.github.io/drive-inteligente-veggi-n8n/**
 
 ---
-*Desenvolvido como uma solução escalável para gestão de ativos digitais.*
+*Projeto desenvolvido para fins de automação de ativos e inteligência de dados.*
