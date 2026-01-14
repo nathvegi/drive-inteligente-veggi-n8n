@@ -13,15 +13,15 @@ O **Drive Inteligente Veggi** é um ecossistema de automação profissional dese
 ## 📸 Detalhes da Arquitetura (n8n)
 
 ### 1. Visão Geral do Fluxo Principal
-![Fluxo Principal](./img/fluxo-principal-geral.png)
+![Fluxo Principal](./img/fluxo-principa-01.png)
 *Arquitetura completa da Bia: desde a entrada da mensagem até a entrega do arquivo final.*
 
 ### 2. Camada de Inteligência e Extração
-![Inteligência e Extração](./img/detalhe-inteligencia.png)
+![Inteligência e Extração](./img/fluxo-principa-02.png)
 *Destaque para o Agente Extrator e o esquema de memória (Redis) que permite conversas contextuais.*
 
 ### 3. Motor de Busca e Filtros
-![Busca e Filtros](./img/detalhe-busca.png)
+![Busca e Filtros](./img/fluxo-principa-03.png)
 *Visualização da lógica de roteamento e busca inteligente no banco de dados PostgreSQL.*
 
 ### 4. Fluxo Auxiliar (Coletor de IDs)
