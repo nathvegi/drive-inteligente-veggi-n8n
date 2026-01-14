@@ -1,5 +1,5 @@
 {
-  "name": "Repositório Telegram - Veggi 3.0",
+  "name": "Repositório Telegram - Veggi",
   "nodes": [
     {
       "parameters": {
@@ -159,7 +159,17 @@
           "conditions": [
             {
               "id": "800aea14-c498-4cc2-bb2f-50926126651a",
-              "leftValue": "={{ $json.colecao }}",
+              "leftValue": "={{ $json.extracted.colecao }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eea03813-b852-4af0-8846-42a7aa964524",
+              "leftValue": "={{ $json.colecao_final }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -168,7 +178,7 @@
               }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
@@ -825,11 +835,12 @@
       ],
       "id": "fbdb138a-bd7d-43c1-a3bd-ff3deadca00c",
       "name": "AI - Agent Extrator",
-      "alwaysOutputData": false
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash-lite",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -842,8 +853,8 @@
       "name": "LLM - Google Gemini (Extrator)",
       "credentials": {
         "googlePalmApi": {
-          "id": "YpUvu5tkum9YHROm",
-          "name": "Google Gemini(PaLM) Api account 2"
+          "id": "6kc1Ql7nUtVihi4k",
+          "name": "Google Gemini(PaLM) Api - Repositorio Inteligente"
         }
       }
     },
@@ -873,11 +884,12 @@
         -336
       ],
       "id": "f1740e98-52d6-401d-9b0a-c86f0b263424",
-      "name": "AI - Agente de Conversa (Bia)"
+      "name": "AI - Agente de Conversa (Bia)",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash-lite",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -890,8 +902,8 @@
       "name": "LLM - Gemini (Resposta Humana)",
       "credentials": {
         "googlePalmApi": {
-          "id": "YpUvu5tkum9YHROm",
-          "name": "Google Gemini(PaLM) Api account 2"
+          "id": "6kc1Ql7nUtVihi4k",
+          "name": "Google Gemini(PaLM) Api - Repositorio Inteligente"
         }
       }
     },
@@ -954,7 +966,6 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash-lite",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -967,8 +978,8 @@
       "name": "LLM - Gemini (Motor de Extração)",
       "credentials": {
         "googlePalmApi": {
-          "id": "YpUvu5tkum9YHROm",
-          "name": "Google Gemini(PaLM) Api account 2"
+          "id": "6kc1Ql7nUtVihi4k",
+          "name": "Google Gemini(PaLM) Api - Repositorio Inteligente"
         }
       }
     }
@@ -977,9 +988,9 @@
     "Telegram Trigger": [
       {
         "json": {
-          "update_id": 849472891,
+          "update_id": 849472913,
           "message": {
-            "message_id": 697,
+            "message_id": 773,
             "from": {
               "id": 739898723,
               "is_bot": false,
@@ -995,8 +1006,8 @@
               "username": "natvegi",
               "type": "private"
             },
-            "date": 1768308119,
-            "text": "catalogo"
+            "date": 1768407960,
+            "text": "quero todos os catalogos inverno 25"
           }
         },
         "pairedItem": {
@@ -1430,7 +1441,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "6391d438-8b0c-4a98-a428-c553b496048b",
+  "versionId": "4fca9dcd-462a-4b72-a9e2-bb310623453e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "10cfc5c607fc578e5c40348476b57656393b690f0014f0dbcb8709797e2dbd26"
