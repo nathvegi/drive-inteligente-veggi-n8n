@@ -38,7 +38,7 @@ Este workflow é o responsável pelo **ETL (Extract, Transform, Load)** dos arqu
 4.  **Upsert Postgres:** Realiza a inserção inteligente. Se o `file_id` já existir, ele apenas atualiza os metadados (permitindo correções de nomes sem duplicar arquivos).
 
 **Visualização do Fluxo de Coleta:**
-![Workflow Coletor](.img/coletor-de-dados.png)
+![Fluxo Coletor](./img/coletor-de-dados.png)
 
 ### ⚠️ Sistema de Alertas e Auditoria (Logs)
 
@@ -139,6 +139,8 @@ Se o sistema falhar ao identificar um termo (ex: usuário diz "peça" em vez de 
 > **Nota:** Para importar no n8n, basta baixar o arquivo JSON, criar um novo workflow e arrastar o arquivo para dentro da tela do editor.
 
 ---
+
 *Documentação produzida para o projeto Drive Inteligente Veggi. 2026.*
+
 ---
 [Voltar para o código no GitHub](https://github.com/seu-usuario/drive-inteligente-veggi-n8n)
